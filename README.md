@@ -33,3 +33,10 @@ Servers emitting `401 Unauthorized` need to produce a syntactically correct `WWW
 - **Invalid scheme or parameter name.** `buildWWWAuthenticate` throws `TypeError` if the scheme or any parameter key is not a valid RFC 7235 token (e.g. contains spaces). Validate input before calling if you prefer to fail soft.
 - **Escaping.** Double quotes (`"`) and backslashes (`\\`) inside values are backslash-escaped. No other characters are escaped; control characters are passed through verbatim — sanitize upstream if that matters for your deployment.
 - **Null/undefined params.** Produces the bare scheme with no trailing space or comma.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
